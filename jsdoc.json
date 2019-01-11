@@ -1,0 +1,19 @@
+{
+  "source": {
+    "include": ["lib" ]
+  },
+  "opts": {
+    "destination": "./docs",
+    "readme": "./README.md",
+     "template": "node_modules/ink-docstrap/template"
+  },
+  "templates": {
+    "systemName": "PlayQueue Docs",
+    "theme": "paper",
+    "search": false,
+    "default": {
+      "outputSourceFiles": false
+    }
+  },
+  "plugins": [ "plugins/markdown" ]
+}
