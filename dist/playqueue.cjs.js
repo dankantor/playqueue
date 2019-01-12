@@ -3697,10 +3697,14 @@ var PlayQueue = function () {
     value: function setOpts(opts) {
       var _this = this;
 
-      var settableOpts = ['shouldNotifyBeforeEnd', 'shouldNotifySongHalf', 'loadTimeout', 'limit', 'localStorageNS'];
+      var settableOpts = [{ 'key': 'loadTimeout' }, { 'key': 'limit' }, { 'key': 'localStorageNS' }, { 'key': 'shouldNotifyBeforeEnd', 'obj': 'audioManager' }, { 'key': 'shouldNotifySongHalf', 'obj': 'audioManager' }];
       settableOpts.forEach(function (settableOpt) {
         if (opts[settableOpt] !== undefined) {
-          _this[settableOpt] = opts[settableOpt];
+          if (settableOpt.obj) {
+            _this[settableOpt.obj][settableOpt.key] = opts[settableOpt];
+          } else {
+            _this[settableOpt.key] = opts[settableOpt];
+          }
         }
       });
       if (opts.useLocalStorage === true) {
