@@ -7,7 +7,8 @@ class App {
     const audio = new Audio();
     const playQueue = new PlayQueue({
       'audio': audio,
-      'useLocalStorage': true
+      'useLocalStorage': true,
+      'shouldNotifySongHalf': true
     });
     list.innerHTML = JSON.stringify(playQueue.list);
     console.log(playQueue.list, playQueue.position, playQueue.shuffle);
@@ -21,7 +22,16 @@ class App {
     playQueue.on('error', obj => {
       console.log('error', obj);
     });
+    playQueue.on('playing', obj => {
+      console.log('playing', obj);
+    });
+    playQueue.on('playing', obj => {
+      console.log('playing 2');
+    });
     document.querySelector('#add').addEventListener('click', e => {
+      playQueue.add('https://ia800604.us.archive.org/32/items/jj2010-07-09.mg210/jj2010.07.09.mg210t03.mp3');
+      
+/*
       playQueue.add([
         {'url': `${this.originalIndex}`}, 
         {'url': `${this.originalIndex}`}, 
@@ -31,6 +41,7 @@ class App {
         {'url': `${this.originalIndex}`}, 
         {'url': `${this.originalIndex}`}
       ]);
+*/
       playQueue.play();
     });
     
