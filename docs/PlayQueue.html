@@ -40,7 +40,7 @@
 			<li class="dropdown">
 				<a href="events.list.html" class="dropdown-toggle" data-toggle="dropdown">Events<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="PlayQueue.html#~event:error">PlayQueue~event:error</a></li><li><a href="PlayQueue.html#~event:listChange">PlayQueue~event:listChange</a></li><li><a href="PlayQueue.html#~event:loading">PlayQueue~event:loading</a></li><li><a href="PlayQueue.html#~event:nextTrack">PlayQueue~event:nextTrack</a></li><li><a href="PlayQueue.html#~event:pause">PlayQueue~event:pause</a></li><li><a href="PlayQueue.html#~event:play">PlayQueue~event:play</a></li><li><a href="PlayQueue.html#~event:playing">PlayQueue~event:playing</a></li><li><a href="PlayQueue.html#~event:preloading">PlayQueue~event:preloading</a></li><li><a href="PlayQueue.html#~event:previousTrack">PlayQueue~event:previousTrack</a></li><li><a href="PlayQueue.html#~event:shuffleToggled">PlayQueue~event:shuffleToggled</a></li><li><a href="PlayQueue.html#~event:songHalf">PlayQueue~event:songHalf</a></li><li><a href="PlayQueue.html#~event:stop">PlayQueue~event:stop</a></li>
+					<li><a href="PlayQueue.html#~event:error">PlayQueue~event:error</a></li><li><a href="PlayQueue.html#~event:listChange">PlayQueue~event:listChange</a></li><li><a href="PlayQueue.html#~event:loading">PlayQueue~event:loading</a></li><li><a href="PlayQueue.html#~event:nextTrack">PlayQueue~event:nextTrack</a></li><li><a href="PlayQueue.html#~event:pause">PlayQueue~event:pause</a></li><li><a href="PlayQueue.html#~event:play">PlayQueue~event:play</a></li><li><a href="PlayQueue.html#~event:playing">PlayQueue~event:playing</a></li><li><a href="PlayQueue.html#~event:preloading">PlayQueue~event:preloading</a></li><li><a href="PlayQueue.html#~event:previousTrack">PlayQueue~event:previousTrack</a></li><li><a href="PlayQueue.html#~event:progressEvents">PlayQueue~event:progressEvents</a></li><li><a href="PlayQueue.html#~event:shuffleToggled">PlayQueue~event:shuffleToggled</a></li><li><a href="PlayQueue.html#~event:stop">PlayQueue~event:stop</a></li><li><a href="PlayQueue.html#~event:trackStart">PlayQueue~event:trackStart</a></li>
 				</ul>
 			</li>
 			
@@ -370,7 +370,7 @@ with the default namespace 'playqueue'. You can change the namespace to a differ
 
         <tr>
             
-                <td class="name"><code>shouldNotifySongHalf</code></td>
+                <td class="name"><code>progressEvents</code></td>
             
 
             <td class="type">
@@ -398,13 +398,12 @@ with the default namespace 'playqueue'. You can change the namespace to a differ
             
                 <td class="default">
                 
-                    false
+                    true
                 
                 </td>
             
 
-            <td class="description last"><p>If true, will trigger 'songHalf' event 
- at half point of playing song.</p></td>
+            <td class="description last"><p>If true, will trigger 'progress' events every 5%</p></td>
         </tr>
 
     
@@ -524,8 +523,7 @@ const audio = new Audio();
 const playQueue = new PlayQueue({
   &#x27;audio&#x27;: audio,
   &#x27;limit&#x27;: 200,
-  &#x27;useLocalStorage&#x27;: true,
-  &#x27;shouldNotifySongHalf&#x27;: true,
+  &#x27;useLocalStorage&#x27;: true
 });</pre>
 
 
@@ -1351,16 +1349,15 @@ and will skip to next song</p>
         
             
 <hr>
-<dt class="name" id="shouldNotifyBeforeEnd">
-    <h4 id="shouldNotifyBeforeEnd"><span class="type-signature">&lt;readonly> </span>shouldNotifyBeforeEnd<span class="type-signature"> :boolean</span></h4>
+<dt class="name" id="progressEvents">
+    <h4 id="progressEvents"><span class="type-signature">&lt;readonly> </span>progressEvents<span class="type-signature"> :boolean</span></h4>
 
     
 </dt>
 <dd>
     
     <div class="description">
-        <p>If true, will trigger 'ended' event manually when there is .5s remaining in song. 
-Fix for mobile Safari which doesn't always fire 'ended' event when song ends.</p>
+        <p>If true, will trigger 'progress' events every 5%.</p>
     </div>
     
 
@@ -1407,7 +1404,7 @@ Fix for mobile Safari which doesn't always fire 'ended' event when song ends.</p
 	<dt class="tag-default method-doc-label method-doc-details-label">Default Value:</dt>
 	<dd class="tag-default">
 		<ul class="dummy">
-			<li>false</li>
+			<li>true</li>
 		</ul>
 	</dd>
 	
@@ -1430,15 +1427,16 @@ Fix for mobile Safari which doesn't always fire 'ended' event when song ends.</p
         
             
 <hr>
-<dt class="name" id="shouldNotifySongHalf">
-    <h4 id="shouldNotifySongHalf"><span class="type-signature">&lt;readonly> </span>shouldNotifySongHalf<span class="type-signature"> :boolean</span></h4>
+<dt class="name" id="shouldNotifyBeforeEnd">
+    <h4 id="shouldNotifyBeforeEnd"><span class="type-signature">&lt;readonly> </span>shouldNotifyBeforeEnd<span class="type-signature"> :boolean</span></h4>
 
     
 </dt>
 <dd>
     
     <div class="description">
-        <p>If true, will trigger 'songHalf' event at half point of playing song.</p>
+        <p>If true, will trigger 'ended' event manually when there is .5s remaining in song. 
+Fix for mobile Safari which doesn't always fire 'ended' event when song ends.</p>
     </div>
     
 
@@ -5599,7 +5597,7 @@ is provided, all listeners of the type will be removed.</p></td>
 
     
     <div class="description">
-        <p>Fires when a new song starts playing.</p>
+        <p>Fires when a new track starts playing, when recovering from being stalled or after it was seeked.</p>
     </div>
     
 
@@ -6098,7 +6096,7 @@ is provided, all listeners of the type will be removed.</p></td>
             
 <hr>
 <dt>
-    <h4 class="name" id="~event:shuffleToggled">shuffleToggled</h4>
+    <h4 class="name" id="~event:progressEvents">progressEvents</h4>
     
     
 </dt>
@@ -6106,138 +6104,7 @@ is provided, all listeners of the type will be removed.</p></td>
 
     
     <div class="description">
-        <p>Fires when the shuffle state changes.</p>
-    </div>
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    <dl>
-
-<table class="props table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>shuffle</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Current shuffle state.</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-</dl>
-
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id="~event:songHalf">songHalf</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>Fires when a song is played halfway through.</p>
+        <p>Fires every 5% progress of a song</p>
     </div>
     
 
@@ -6350,6 +6217,137 @@ is provided, all listeners of the type will be removed.</p></td>
             
 
             <td class="description last"><p>various audio properties.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</dl>
+
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="~event:shuffleToggled">shuffleToggled</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Fires when the shuffle state changes.</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>shuffle</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Current shuffle state.</p></td>
         </tr>
 
     
@@ -6595,6 +6593,191 @@ is provided, all listeners of the type will be removed.</p></td>
     
 </dd>
 
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="~event:trackStart">trackStart</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Fires when a new track begins</p>
+    </div>
+    
+
+    
+
+    
+        <h5>Type: 
+<span class="param-type">object</span>
+
+
+</h5>
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>song</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="PlayQueue.html#~Song">PlayQueue~Song</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The playing song.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>position</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Current position.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>audio</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="PlayQueue.html#~audioProperties">PlayQueue~audioProperties</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>various audio properties.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</dl>
+
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
         </dl>
     
 </article>
@@ -6626,7 +6809,7 @@ is provided, all listeners of the type will be removed.</p></td>
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
 	
-		on 2019-01-19T11:37:57-05:00
+		on 2019-10-09T13:33:20-04:00
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>
