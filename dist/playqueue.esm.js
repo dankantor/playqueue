@@ -1097,7 +1097,8 @@ var EventBus = function () {
         'pause': true,
         'error': true,
         'preloading': true,
-        'progress': true
+        'progress': true,
+        'trackStart': true
       };
     }
   }]);
@@ -2142,9 +2143,9 @@ var _perform = function (exec) {
   }
 };
 
-var navigator = _global.navigator;
+var navigator$1 = _global.navigator;
 
-var _userAgent = navigator && navigator.userAgent || '';
+var _userAgent = navigator$1 && navigator$1.userAgent || '';
 
 var _promiseResolve = function (C, x) {
   _anObject(C);
@@ -2575,6 +2576,12 @@ var AudioManager = function () {
         this.audio.addEventListener('remoteprevious', this.previous.bind(this));
         this.audio.addEventListener('remotenext', this.next.bind(this));
       }
+      try {
+        navigator.mediaSession.setActionHandler('play', this.resume.bind(this));
+        navigator.mediaSession.setActionHandler('pause', this.pause.bind(this));
+        navigator.mediaSession.setActionHandler('previoustrack', this.previous.bind(this));
+        navigator.mediaSession.setActionHandler('nexttrack', this.next.bind(this));
+      } catch (err) {}
     }
 
     //todo why do "playing" here vs. "canplay"?
@@ -2582,6 +2589,9 @@ var AudioManager = function () {
   }, {
     key: 'audioOnCanPlay',
     value: function audioOnCanPlay() {
+      if (this.canPlayCalled === false) {
+        this.triggerEvent('trackStart');
+      }
       this.canPlayCalled = true;
       this.audio.play();
       this.triggerEvent('playing');
@@ -3017,7 +3027,7 @@ var AudioManager = function () {
 
 /**
  * @event PlayQueue~playing
- * @description Fires when a new song starts playing.
+ * @description Fires when a new track starts playing, when recovering from being stalled or after it was seeked.
  * @type {object}
  * @property {PlayQueue~Song} song - The playing song.
  * @property {number} position - Current position.
@@ -3072,6 +3082,15 @@ var AudioManager = function () {
 /**
 * @event PlayQueue~stop
 * @description Fires when the last song in the list ends. 
+* @type {object}
+* @property {PlayQueue~Song} song - The playing song.
+* @property {number} position - Current position.
+* @property {PlayQueue~audioProperties} audio - various audio properties.
+*/
+
+/**
+* @event PlayQueue~trackStart
+* @description Fires when a new track begins 
 * @type {object}
 * @property {PlayQueue~Song} song - The playing song.
 * @property {number} position - Current position.
