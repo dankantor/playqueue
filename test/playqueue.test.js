@@ -421,6 +421,24 @@ describe("PlayQueue", function(){
             });
             pq.play(0);
         });
+        it("should trigger an event when audio is 5% complete", function(done){
+            this.timeout(6000);
+            var pq = createNewPlayQueue(
+                {
+                    'progressEvents': true
+                }
+            );
+            addSongs(pq);
+            pq.addEventListener('progressEvents', function(e){
+                pq.addEventListener('playing', function(e){
+                    assert.equal(e.target.queueNumber, 1);
+                    assert.equal(e.target.song.url, songUrlOne);
+                    pq.audio.pause();
+                    done();
+                });
+            });
+            pq.play(0);
+        });
     }); // end audio
     
     describe("localStorage", function(){
