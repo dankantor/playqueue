@@ -9,7 +9,7 @@ export default [
 		entry: 'lib/index.js',
 		dest: pkg.browser,
 		format: 'umd',
-		moduleName: 'audio-controls',
+		moduleName: 'playqueue',
 		plugins: [
   		resolve(),
   		commonjs(),
