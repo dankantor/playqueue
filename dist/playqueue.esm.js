@@ -1155,7 +1155,8 @@ var EventBus = function () {
         'preloading': true,
         'progress': true,
         'trackStart': true,
-        'minutes': true
+        'minutes': true,
+        'heartbeat': true
       };
     }
   }]);
@@ -2650,7 +2651,7 @@ var AudioManager = function () {
         this.audio.addEventListener('error', this.audioOnError.bind(this));
         this.audio.addEventListener('play', this.audioOnPlay.bind(this));
         this.audio.addEventListener('pause', this.audioOnPause.bind(this));
-        if (this.shouldNotifyBeforeEnd === true || this.progressEvents === true || this.minuteEvents === true) {
+        if (this.shouldNotifyBeforeEnd === true || this.progressEvents === true || this.minuteEvents === true || this.heartbeat > 0) {
           this.audio.addEventListener('timeupdate', this.timeUpdate.bind(this));
         }
         if (this.shouldNotifyBeforeEnd === false) {
@@ -2681,7 +2682,7 @@ var AudioManager = function () {
     }
 
     // Listener on audio timeupdate
-    // Handles shouldNotifyBeforeEnd, progressEvents and minuteEvents
+    // Handles shouldNotifyBeforeEnd, progressEvents, minuteEvents and heartbeat
 
   }, {
     key: 'timeUpdate',
@@ -2707,6 +2708,17 @@ var AudioManager = function () {
           }
         }
         this.minuteRemainder = minuteRemainder;
+      }
+      if (this.heartbeat > 0) {
+        var now = new Date();
+        var secs = Math.floor(now.getTime() / 1000);
+        if (this.lastHeartBeat === 0) {
+          this.lastHeartBeat = secs;
+        }
+        if (secs - this.lastHeartBeat > this.heartbeat) {
+          this.lastHeartBeat = secs;
+          this.triggerEvent('heartbeat');
+        }
       }
     }
 
@@ -3058,6 +3070,22 @@ var AudioManager = function () {
     },
     set: function set(bool) {
       this._minuteEvents = bool;
+    }
+  }, {
+    key: 'heartbeat',
+    get: function get() {
+      return this._heartbeat || 0;
+    },
+    set: function set(n) {
+      this._heartbeat = n;
+    }
+  }, {
+    key: 'lastHeartBeat',
+    get: function get() {
+      return this._lastHeartBeat || 0;
+    },
+    set: function set(secs) {
+      this._lastHeartBeat = secs;
     }
   }, {
     key: 'isStopped',
@@ -3743,13 +3771,13 @@ var PlayQueue = function () {
     value: function setOpts(opts) {
       var _this = this;
 
-      var settableOpts = [{ 'key': 'loadTimeout' }, { 'key': 'limit' }, { 'key': 'localStorageNS' }, { 'key': 'shouldNotifyBeforeEnd', 'obj': 'audioManager' }, { 'key': 'progressEvents', 'obj': 'audioManager' }, { 'key': 'minuteEvents', 'obj': 'audioManager' }];
+      var settableOpts = [{ 'key': 'loadTimeout' }, { 'key': 'limit' }, { 'key': 'localStorageNS' }, { 'key': 'shouldNotifyBeforeEnd', 'obj': 'audioManager' }, { 'key': 'progressEvents', 'obj': 'audioManager' }, { 'key': 'minuteEvents', 'obj': 'audioManager' }, { 'key': 'heartbeat', 'obj': 'audioManager' }];
       settableOpts.forEach(function (settableOpt) {
-        if (opts[settableOpt] !== undefined) {
+        if (opts[settableOpt.key] !== undefined) {
           if (settableOpt.obj) {
-            _this[settableOpt.obj][settableOpt.key] = opts[settableOpt];
+            _this[settableOpt.obj][settableOpt.key] = opts[settableOpt.key];
           } else {
-            _this[settableOpt.key] = opts[settableOpt];
+            _this[settableOpt.key] = opts[settableOpt.key];
           }
         }
       });
