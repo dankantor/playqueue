@@ -2703,12 +2703,9 @@ var AudioManager = function () {
         this.progressRemainder = progressRemainder;
       }
       if (this.heartbeat > 0) {
-        var heartbeatTimer = Math.floor(this.audio.currentTime / this.heartbeat);
         var heartbeatRemainder = Math.floor(this.audio.currentTime % this.heartbeat);
         if (heartbeatRemainder === 0 && heartbeatRemainder !== this.heartbeatRemainder) {
-          if (heartbeatTimer !== 0) {
-            this.triggerEvent('heartbeat');
-          }
+          this.triggerEvent('heartbeat');
         }
         this.heartbeatRemainder = heartbeatRemainder;
       }
