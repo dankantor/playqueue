@@ -2699,10 +2699,10 @@ var AudioManager = function () {
         this.progressRemainder = progressRemainder;
       }
       if (this.heartbeat > 0) {
-        this.heartbeatTimer = Math.floor(this.audio.currentTime / this.heartbeat);
+        var heartbeatTimer = Math.floor(this.audio.currentTime / this.heartbeat);
         var heartbeatRemainder = Math.floor(this.audio.currentTime % this.heartbeat);
         if (heartbeatRemainder === 0 && heartbeatRemainder !== this.heartbeatRemainder) {
-          if (this.heartbeatTimer !== 0) {
+          if (heartbeatTimer !== 0) {
             this.triggerEvent('heartbeat');
           }
         }
@@ -2818,7 +2818,6 @@ var AudioManager = function () {
       this.isStopped = false;
       this.beforeEndNotified = false;
       this.progressPercentage = 0;
-      this.heartbeatTimer = 0;
       this.listManager.position = n;
       this.audio.src = song.url;
       this.audio.load();
