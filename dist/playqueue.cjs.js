@@ -1159,7 +1159,6 @@ var EventBus = function () {
         'preloading': true,
         'progress': true,
         'trackStart': true,
-        'minutes': true,
         'heartbeat': true
       };
     }
@@ -2655,7 +2654,7 @@ var AudioManager = function () {
         this.audio.addEventListener('error', this.audioOnError.bind(this));
         this.audio.addEventListener('play', this.audioOnPlay.bind(this));
         this.audio.addEventListener('pause', this.audioOnPause.bind(this));
-        if (this.shouldNotifyBeforeEnd === true || this.progressEvents === true || this.minuteEvents === true || this.heartbeat > 0) {
+        if (this.shouldNotifyBeforeEnd === true || this.progressEvents === true || this.heartbeat > 0) {
           this.audio.addEventListener('timeupdate', this.timeUpdate.bind(this));
         }
         if (this.shouldNotifyBeforeEnd === false) {
@@ -2686,7 +2685,7 @@ var AudioManager = function () {
     }
 
     // Listener on audio timeupdate
-    // Handles shouldNotifyBeforeEnd, progressEvents, minuteEvents and heartbeat
+    // Handles shouldNotifyBeforeEnd, progressEvents and heartbeat
 
   }, {
     key: 'timeUpdate',
@@ -2703,26 +2702,12 @@ var AudioManager = function () {
         }
         this.progressRemainder = progressRemainder;
       }
-      if (this.minuteEvents === true) {
-        this.minuteTimer = Math.floor(this.audio.currentTime / 60);
-        var minuteRemainder = Math.floor(this.audio.currentTime % 60);
-        if (minuteRemainder === 0 && minuteRemainder !== this.minuteRemainder) {
-          if (this.minuteTimer !== 0) {
-            this.triggerEvent('minutes');
-          }
-        }
-        this.minuteRemainder = minuteRemainder;
-      }
       if (this.heartbeat > 0) {
-        var now = new Date();
-        var secs = Math.floor(now.getTime() / 1000);
-        if (this.lastHeartBeat === 0) {
-          this.lastHeartBeat = secs;
-        }
-        if (secs - this.lastHeartBeat > this.heartbeat) {
-          this.lastHeartBeat = secs;
+        var heartbeatRemainder = Math.floor(this.audio.currentTime % this.heartbeat);
+        if (heartbeatRemainder === 0 && heartbeatRemainder !== this.heartbeatRemainder) {
           this.triggerEvent('heartbeat');
         }
+        this.heartbeatRemainder = heartbeatRemainder;
       }
     }
 
@@ -2834,7 +2819,6 @@ var AudioManager = function () {
       this.isStopped = false;
       this.beforeEndNotified = false;
       this.progressPercentage = 0;
-      this.minuteTimer = 0;
       this.listManager.position = n;
       this.audio.src = song.url;
       this.audio.load();
@@ -2988,7 +2972,7 @@ var AudioManager = function () {
         'position': this.listManager.position,
         'audio': this.audioProperties,
         'progress': this.progressPercentage,
-        'minute': this.minuteTimer
+        'heartbeat': Math.floor(this.audioProperties.currentTime)
       });
     }
   }, {
@@ -3068,28 +3052,12 @@ var AudioManager = function () {
       this._progressEvents = bool;
     }
   }, {
-    key: 'minuteEvents',
-    get: function get() {
-      return this._minuteEvents || true;
-    },
-    set: function set(bool) {
-      this._minuteEvents = bool;
-    }
-  }, {
     key: 'heartbeat',
     get: function get() {
       return this._heartbeat || 0;
     },
     set: function set(n) {
       this._heartbeat = n;
-    }
-  }, {
-    key: 'lastHeartBeat',
-    get: function get() {
-      return this._lastHeartBeat || 0;
-    },
-    set: function set(secs) {
-      this._lastHeartBeat = secs;
     }
   }, {
     key: 'isStopped',
@@ -3197,8 +3165,8 @@ var AudioManager = function () {
  */
 
 /**
- * @event PlayQueue~minuteEvents
- * @description Fires every min of a song
+ * @event PlayQueue~heartbeat
+ * @description Fires every 'hearbeat' of a song
  * @type {object}
  * @property {PlayQueue~Song} song - The playing song.
  * @property {number} position - Current position.
@@ -3775,7 +3743,7 @@ var PlayQueue = function () {
     value: function setOpts(opts) {
       var _this = this;
 
-      var settableOpts = [{ 'key': 'loadTimeout' }, { 'key': 'limit' }, { 'key': 'localStorageNS' }, { 'key': 'shouldNotifyBeforeEnd', 'obj': 'audioManager' }, { 'key': 'progressEvents', 'obj': 'audioManager' }, { 'key': 'minuteEvents', 'obj': 'audioManager' }, { 'key': 'heartbeat', 'obj': 'audioManager' }];
+      var settableOpts = [{ 'key': 'loadTimeout' }, { 'key': 'limit' }, { 'key': 'localStorageNS' }, { 'key': 'shouldNotifyBeforeEnd', 'obj': 'audioManager' }, { 'key': 'progressEvents', 'obj': 'audioManager' }, { 'key': 'heartbeat', 'obj': 'audioManager' }];
       settableOpts.forEach(function (settableOpt) {
         if (opts[settableOpt.key] !== undefined) {
           if (settableOpt.obj) {
