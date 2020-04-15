@@ -2697,12 +2697,12 @@ var AudioManager = function () {
         this.next({ 'type': 'ended' });
       }
       if (this.progressEvents === true) {
-        this.progressPercentage = Math.floor(this.audio.currentTime / this.audio.duration * 100);
-        var progressRemainder = this.progressPercentage % 5;
-        if (progressRemainder === 0 && progressRemainder !== this.progressRemainder) {
+        var progressPercentage = Math.floor(this.audio.currentTime / this.audio.duration * 100);
+        //let progressRemainder = this.progressPercentage % 5;
+        if (progressPercentage !== this.progressPercentage) {
           this.triggerEvent('progress');
         }
-        this.progressRemainder = progressRemainder;
+        this.progressPercentage = progressPercentage;
       }
       if (this.heartbeat > 0) {
         var heartbeatRemainder = Math.floor(this.audio.currentTime % this.heartbeat);
@@ -3081,12 +3081,12 @@ var AudioManager = function () {
       this._validatePlayFunction = fn;
     }
   }, {
-    key: 'progressRemainder',
+    key: 'progressPercentage',
     get: function get() {
-      return this._progressRemainder || 0;
+      return this._progressPercentage || 0;
     },
     set: function set(n) {
-      this._progressRemainder = n;
+      this._progressPercentage = n;
     }
   }, {
     key: 'audioProperties',
