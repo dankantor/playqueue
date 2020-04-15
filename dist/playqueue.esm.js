@@ -1155,7 +1155,8 @@ var EventBus = function () {
         'preloading': true,
         'progress': true,
         'trackStart': true,
-        'heartbeat': true
+        'heartbeat': true,
+        'ended': true
       };
     }
   }]);
@@ -2691,12 +2692,12 @@ var AudioManager = function () {
         this.next({ 'type': 'ended' });
       }
       if (this.progressEvents === true) {
-        this.progressPercentage = Math.floor(this.audio.currentTime / this.audio.duration * 100);
-        var progressRemainder = this.progressPercentage % 5;
-        if (progressRemainder === 0 && progressRemainder !== this.progressRemainder) {
+        var progressPercentage = Math.floor(this.audio.currentTime / this.audio.duration * 100);
+        if (progressPercentage !== this.progressPercentage) {
+          this.progressPercentage = progressPercentage;
           this.triggerEvent('progress');
         }
-        this.progressRemainder = progressRemainder;
+        this.progressPercentage = progressPercentage;
       }
       if (this.heartbeat > 0) {
         var heartbeatRemainder = Math.floor(this.audio.currentTime % this.heartbeat);
@@ -2893,6 +2894,7 @@ var AudioManager = function () {
     value: function next(e) {
       // not user initiated
       if (e && e.type === 'ended') {
+        this.triggerEvent('ended');
         if (this.listManager.position < this.listManager.length - 1 && this.listManager.autoNext === true) {
           this._next();
         } else {
@@ -3075,12 +3077,12 @@ var AudioManager = function () {
       this._validatePlayFunction = fn;
     }
   }, {
-    key: 'progressRemainder',
+    key: 'progressPercentage',
     get: function get() {
-      return this._progressRemainder || 0;
+      return this._progressPercentage || 0;
     },
     set: function set(n) {
-      this._progressRemainder = n;
+      this._progressPercentage = n;
     }
   }, {
     key: 'audioProperties',
@@ -3153,7 +3155,7 @@ var AudioManager = function () {
 
 /**
  * @event PlayQueue~progressEvents
- * @description Fires every 5% progress of a song
+ * @description Fires every 1% progress of a song
  * @type {object}
  * @property {PlayQueue~Song} song - The playing song.
  * @property {number} position - Current position.
@@ -3205,7 +3207,14 @@ var AudioManager = function () {
 * @property {PlayQueue~audioProperties} audio - various audio properties.
 */
 
-// todo - create a state object with song, audio, isStopped, position, shuffle, etc
+/**
+* @event PlayQueue~ended
+* @description Fires when a track ends 
+* @type {object}
+* @property {PlayQueue~Song} song - The playing song.
+* @property {number} position - Current position.
+* @property {PlayQueue~audioProperties} audio - various audio properties.
+*/
 
 var ListManager = function () {
   function ListManager() {
