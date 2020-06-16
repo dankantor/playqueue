@@ -1156,7 +1156,9 @@ var EventBus = function () {
         'progress': true,
         'trackStart': true,
         'heartbeat': true,
-        'ended': true
+        'ended': true,
+        'beforeSeek': true,
+        'seek': true
       };
     }
   }]);
@@ -2880,7 +2882,9 @@ var AudioManager = function () {
     // Percentage range = 0-1
     value: function seek(percentage) {
       if (!isNaN(this.audio.duration)) {
+        this.triggerEvent('beforeSeek');
         this.audio.currentTime = Math.floor(percentage * this.audio.duration);
+        this.triggerEvent('seek');
       }
     }
 
