@@ -2,7 +2,7 @@
   "author": "Dan Kantor <dan@ex.fm>",
   "name": "playqueue",
   "description": "Queue management for a list of songs.",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "main": "dist/playqueue.cjs.js",
   "module": "dist/playqueue.esm.js",
   "browser": "dist/playqueue.umd.js",

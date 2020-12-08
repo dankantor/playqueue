@@ -3769,6 +3769,9 @@ var PlayQueue = function () {
       if (opts.useLocalStorage === true) {
         this.listManager.initFromLocalStorage();
       }
+      if (opts.listManager) {
+        this._listManager = opts.listManager;
+      }
     }
   }, {
     key: 'add',
